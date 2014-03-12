@@ -1,0 +1,134 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<style>
+
+header.td
+{
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+
+header.table
+{
+
+width:90%;
+}
+</style>
+
+<head th:include="../thymeleaf/common :: headerFragment" th:remove="tag">
+   <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/auth.css" th:href="@{/resources/css/auth.css}" />
+</head>
+<body>
+
+   <div th:include="../thymeleaf/header" th:remove="tag"> 
+   
+   <div id="header">
+		<table style="background-color: #005288;width:90%;">
+			<tr>
+				<td>
+					<img src="../../resources/images/GlasgowBanner2.png"/>
+				</td>
+				<td>
+					<div style="margin: 0; font: 0.8251em arial;">
+				 		<span style="color:white;font-size: 40px">University of Glasgow Authorisation Service</span> 
+			
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+  
+    </div>
+
+
+<h1>
+		 
+	  Hello <span th:text="${username}">Prototype user Name</span>
+</h1>
+
+<p>User list size  <span th:text="${#lists.size(users)} ">5</span></p>
+
+<p>User list contains Fred?  <span th:text="${#strings.listContains(users,'Fred')} ">Yes</span></p>
+
+<p>User list contains Fred?  <span th:text="${#lists.contains(users,'Fred')} ">Yes</span></p>
+
+<p>User list contains David?  <span th:text="${#lists.contains(users,'David')} ">No</span></p>
+
+<p>Username contains name Kelly? <span th:text="${#strings.contains(username,'Kelly')} ">Yes</span></p>
+
+<p>Username unCapitalize <span th:text="${#strings.unCapitalize(username)} ">Kelly</span></p>
+
+<p>Today is: <span th:text="${#calendars.format(today,'dd MMMM yyyy')}">27 February 2014</span></p>
+
+<p>Day is: <span th:text="${#dates.dayOfWeekName(today)}">Monday</span></p>
+
+<p>Number 2 decimal places: <span th:text="${#numbers.formatDecimal(aNumber, 0, 3)}">4.15</span></p>
+
+
+
+<p>In two years, it will be <span th:text="2014 + 2">2015</span>.</p>
+
+   
+
+<h2>Sorted List</h2>
+
+<table style="width:20%;" border="1">
+     <thead>
+     <tr>
+     	<th>
+     		Name
+     	</th>
+     	</tr>
+     </thead>
+     <tbody>
+		<tr th:each="user : ${#lists.sort(users)}">
+		        <td th:text="${user}">John Apricot</td>	    
+		</tr>
+		
+		<tr th:remove="all">
+		    <td>AN Other</td>
+  		</tr>
+     </tbody>
+    </table>
+    
+ <h2>UnSorted List</h2>
+    
+<table style="width:20%;" border="1">
+     <thead>
+     <tr>
+     	<th>
+     		Name
+     	</th>
+     	</tr>
+     </thead>
+     <tbody>
+		<tr th:each="user : ${users}">
+		        <td th:text="${user}">John Apricot</td>	    
+		</tr>
+		
+		<tr th:remove="all">
+		    <td>AN Other</td>
+  		</tr>
+     </tbody>
+    </table>    
+    
+     
+    <div th:include="../thymeleaf/footer" th:remove="tag">   
+      	<div style="color:white;text-align: center;background-color: #005288;width:90%;height:100px;" id="footer">
+			<br></br>
+			
+			<a target="_blank" style="color:white" href="http://www.gla.ac.uk/services/planning/contactus">Contact</a> | 
+			<a style="color:white" href="about">About</a> | 
+			<a style="color:white" href="help">Help</a>
+			
+			<br></br>
+		
+		</div>
+    </div>
+
+
+</body>
+</html>

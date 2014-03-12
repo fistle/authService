@@ -1,0 +1,76 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<style>
+
+header.td
+{
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+
+header.table
+{
+
+width:90%;
+}
+</style>
+
+<head th:include="../thymeleaf/common :: headerFragment" th:remove="tag">
+   <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/auth.css" th:href="@{/resources/css/auth.css}" />
+</head>
+<body>
+
+   <div th:include="../thymeleaf/header" th:remove="tag"> 
+   
+   <div id="header">
+		<table style="background-color: #005288;width:90%;">
+			<tr>
+				<td>
+					<img src="../../resources/images/GlasgowBanner2.png"/>
+				</td>
+				<td>
+					<div style="margin: 0; font: 0.8251em arial;">
+				 		<span style="color:white;font-size: 40px">University of Glasgow Authorisation Service</span> 
+			
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+  
+    </div>
+
+
+<h1>
+		 
+	  Home Page 
+	  
+
+</h1>
+<br></br>
+	  Hello <span th:text="${username}">Prototype user Name</span>
+	  
+	 <br></br><br></br><a href="page1.html">Page 1</a><br></br><br></br> 
+
+
+    
+     
+    <div th:include="../thymeleaf/footer" th:remove="tag">   
+      	<div style="color:white;text-align: center;background-color: #005288;width:90%;height:100px;" id="footer">
+			<br></br>
+			
+			<a target="_blank" style="color:white" href="http://www.gla.ac.uk/services/planning/contactus">Contact</a> | 
+			<a style="color:white" href="about">About</a> | 
+			<a style="color:white" href="help">Help</a>
+			
+			<br></br>
+		
+		</div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,1264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>
+         FindBugs (2.0.0) 
+         Analysis for 
+         authorisationService</title>
+<style type="text/css">
+         html, body, div, form {
+            margin:0px;
+            padding:0px;
+         }
+         body {
+            padding:3px;
+         }
+         a, a:link , a:active, a:visited, a:hover {
+            text-decoration: none; color: black;
+         }
+         #navlist {
+                 padding: 3px 0;
+                 margin-left: 0;
+                 border-bottom: 1px solid #778;
+                 font: bold 12px Verdana, sans-serif;
+         }
+         #navlist li {
+                 list-style: none;
+                 margin: 0;
+                 display: inline;
+         }
+         #navlist li a {
+                 padding: 3px 0.5em;
+                 margin-left: 3px;
+                 border: 1px solid #778;
+                 border-bottom: none;
+                 background: #DDE;
+                 text-decoration: none;
+         }
+         #navlist li a:link { color: #448; }
+         #navlist li a:visited { color: #667; }
+         #navlist li a:hover {
+                 color: #000;
+                 background: #AAE;
+                 border-color: #227;
+         }
+         #navlist li a.current {
+                 background: white;
+                 border-bottom: 1px solid white;
+         }
+         #filterWrapper {
+            margin-bottom:5px;
+         }
+         #displayWrapper {
+            margin-top:5px;
+         }
+         .message {
+            background:#BBBBBB;
+           border: 1px solid #778;
+         }
+         .displayContainer {
+            border:1px solid #555555;
+            margin-top:3px;
+            padding: 3px;
+            display:none;
+         }
+         #summaryContainer table,
+         #historyContainer table {
+            border:1px solid black;
+         }
+         #summaryContainer th,
+         #historyContainer th {
+            background: #aaaaaa;
+            color: white;
+         }
+         #summaryContainer th, #summaryContainer td,
+         #historyContainer th, #historyContainer td {
+            padding: 2px 4px 2px 4px;
+         }
+         .summary-name {
+            background: #eeeeee;
+            text-align:left;
+         }
+         .summary-size {
+            background: #eeeeee;
+            text-align:center;
+         }
+         .summary-priority-all {
+            background: #dddddd;
+            text-align:center;
+         }
+         .summary-priority-1 {
+            background: red;
+            text-align:center;
+         }
+         .summary-priority-2 {
+            background: orange;
+            text-align:center;
+         }
+         .summary-priority-3 {
+            background: green;
+            text-align:center;
+         }
+         .summary-priority-4 {
+            background: blue;
+            text-align:center;
+         }
+
+         .bugList-level1 {
+            margin-bottom:5px;
+         }
+         .bugList-level1, .bugList-level2, .bugList-level3, .bugList-level4 {
+            background-color: #ffffff;
+            margin-left:15px;
+            padding-left:10px;
+         }
+         .bugList-level1-label, .bugList-level2-label, .bugList-level3-label, .bugList-level4-label {
+            background-color: #bbbbbb;
+            border: 1px solid black;
+            padding: 1px 3px 1px 3px;;
+         }
+         .bugList-level2-label, .bugList-level3-label, .bugList-level4-label {
+            border-width: 0px 1px 1px 1px;
+         }
+         .bugList-level4-label {
+            background-color: #ffffff;
+            border: 0px 0px 1px 0px;
+         }
+         .bugList-level4 {
+            border: 0px 1px 1px 1px;
+         }
+
+         .bugList-level4-inner {
+            border-style: solid;
+            border-color: black;
+            border-width: 0px 1px 1px 1px;
+         }
+         .b-r {
+            font-size: 10pt; font-weight: bold; padding: 0 0 0 60px;
+         }
+         .b-d {
+            font-weight: normal; background: #ccccc0;
+            padding: 0 5px 0 5px; margin: 0px;
+         }
+         .b-1 {
+            background: red; height: 0.5em; width: 1em;
+            margin-right: 0.5em;
+         }
+         .b-2 {
+            background: orange; height: 0.5em; width: 1em;
+            margin-right: 0.5em;
+         }
+         .b-3 {
+            background: green; height: 0.5em; width: 1em;
+            margin-right: 0.5em;
+         }
+         .b-4 {
+            background: blue; height: 0.5em; width: 1em;
+            margin-right: 0.5em;
+         }
+
+      </style>
+<script type="text/javascript">
+         var menus            = new Array('summary','info','history','listByCategories','listByPackages');
+         var selectedMenuId   = "summary";
+         var selectedVersion  = -1;
+         var selectedPriority = 4;
+         var lastVersion      = 0;
+         var includeFixedIntroducedBugs;
+
+         var bPackageNamesPopulated = false;
+
+         var filterContainerId              = "filterWrapper";
+         var historyControlContainerId      = "historyControlWrapper";
+         var messageContainerId             = "messageContainer";
+         var summaryContainerId             = "summaryContainer";
+         var infoContainerId                = "infoContainer";
+         var historyContainerId             = "historyContainer";
+         var listByCategoriesContainerId    = "listByCategoriesContainer";
+         var listByPackagesContainerId      = "listByPackagesContainer";
+
+         var idxCatKey = 0; var idxCatDescr = 1; var idxBugCat = 1;
+         var idxCodeKey = 0; var idxCodeDescr = 1; var idxBugCode = 2;
+         var idxPatternKey = 2; var idxPatternDescr = 3; var idxBugPattern = 3;
+         var idxBugKey = 0; var idxBugDescr = 6;
+         var idxBugClass = 6, idxBugPackage = 7;
+
+         // main init function
+         function init() {
+            loadFilter();
+            selectMenu(selectedMenuId);
+            lastVersion = versions.length - 1;
+         }
+
+         // menu callback function
+         function selectMenu(menuId) {
+            document.getElementById(selectedMenuId).className="none";
+            document.getElementById(menuId).className="current";
+            if (menuId!=selectedMenuId) {
+               hideMenu(selectedMenuId);
+               selectedMenuId = menuId;
+            }
+            if (menuId=="summary")           displaySummary();
+            if (menuId=="info")              displayInfo();
+            if (menuId=="history")           displayHistory();
+            if (menuId=="listByCategories")  displayListByCategories();
+            if (menuId=="listByPackages")    displayListByPackages();
+         }
+
+         // display filter
+         function loadFilter() {
+            var versionsBox = document.findbugsForm.versions.options;
+            versionsBox[0] = new Option(" -- All Versions -- ","-1");
+            versionsBox.selectedIndex = 0;
+            if (versions.length>=1) {
+               for (x=0; versions.length>1 && x<versions.length; x++) {
+                  versionsBox[x+1] = new Option(" Bugs at release: "+versions[versions.length-x-1][1], versions[versions.length-x-1][0]);
+               }
+            }
+
+            var prioritiesBox = document.findbugsForm.priorities.options;
+            prioritiesBox[0] = new Option(" -- All priorities -- ", "4");
+            prioritiesBox[1] = new Option(" P1 bugs ", "1");
+            prioritiesBox[2] = new Option(" P1 and P2 bugs ", "2");
+            prioritiesBox[3] = new Option(" P1, P2 and P3 bugs ", "3");
+         }
+
+         // display a message
+         function displayMessage(msg) {
+            var container = document.getElementById(messageContainerId);
+            container.innerHTML = "<div class='message'>"+msg+"</div>";
+         }
+
+         // reset displayed message
+         function resetMessage() {
+            var container = document.getElementById(messageContainerId);
+            container.innerHTML = "";
+         }
+
+         function hideMenu(menuId) {
+            var container = menuId+"Container";
+            document.getElementById(container).style.display="none";
+         }
+
+         // filter callback function
+         function filter() {
+            var versionsBox = document.findbugsForm.versions.options;
+            selectedVersion = versionsBox[versionsBox.selectedIndex].value;
+
+            var prioritiesBox = document.findbugsForm.priorities.options;
+            selectedPriority = prioritiesBox[prioritiesBox.selectedIndex].value;
+
+            selectMenu(selectedMenuId);
+         }
+
+         // includeFixedBugs callback function
+         function includeFixedIntroducedBugsInHistory() {
+            includeFixedIntroducedBugs =
+              document.findbugsHistoryControlForm.includeFixedIntroducedBugs.checked;
+
+            selectMenu(selectedMenuId);
+         }
+
+         // display summary tab
+         function displaySummary() {
+            resetMessage();
+            hide(filterContainerId);
+            hide(historyControlContainerId);
+            var container = document.getElementById(summaryContainerId);
+            container.style.display="block";
+         }
+
+         // display info tab
+         function displayInfo() {
+            resetMessage();
+            hide(filterContainerId);
+            hide(historyControlContainerId);
+            var container = document.getElementById(infoContainerId);
+            container.style.display="block";
+         }
+
+         // display history tab
+         function displayHistory() {
+            displayMessage("Loading history...");
+            hide(filterContainerId);
+            show(historyControlContainerId);
+            var container = document.getElementById(historyContainerId);
+            var content = "";
+            var i=0;
+            var p = [0,0,0,0,0];
+            var f = [0,0,0,0,0];
+
+            content += "<table><tr><th>Release</th><th>Bugs</th><th>Bugs p1</th><th>Bugs p2</th><th>Bugs p3</th><th>Bugs Exp.</th></tr>";
+
+            var aSpan   = "<span title='Bugs introduced in this release that have not been fixed.'>";
+            var fSpan   = "<span title='Bugs fixed in this release.'>";
+            var fiSpan  = "<span title='Bugs introduced in this release that were fixed in later releases.'>";
+            var afiSpan = "<span title='Total number of bugs introduced in this release.'>";
+            var eSpan   = "</span>";
+
+            if(includeFixedIntroducedBugs) {
+                for (i=(versions.length-1); i>0; i--) {
+                    v = countBugsVersion(i, 4);
+                    t = countTotalBugsVersion(i);
+                    o = countFixedButActiveBugsVersion(i);
+                    f = countFixedBugsInVersion(i);
+                    fi = countFixedBugsIntroducedInVersion(i);
+                    content += "<tr>";
+                    content += "<td class='summary-name'>" + versions[i][1] + "</td>";
+                    content += "<td class='summary-priority-all'> " + (t[0] + o[0]) + " (+" + afiSpan + (v[0] + fi[0]) + eSpan +
+                      " [" + aSpan + v[0] + eSpan + " / " + fiSpan + fi[0] + eSpan + "] " + eSpan + " / -" + fSpan + f[0] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-1'> " + (t[1] + o[1]) + " (+" + afiSpan + (v[1] + fi[1]) + eSpan +
+                      " [" + aSpan + v[1] + eSpan + " / " + fiSpan + fi[1] + eSpan + "] " + eSpan + " / -" + fSpan + f[1] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-2'> " + (t[2] + o[2]) + " (+" + afiSpan + (v[2] + fi[2]) + eSpan +
+                      " [" + aSpan + v[2] + eSpan + " / " + fiSpan + fi[2] + eSpan + "] " + eSpan + " / -" + fSpan + f[2] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-3'> " + (t[3] + o[3]) + " (+" + afiSpan + (v[3] + fi[3]) + eSpan +
+                      " [" + aSpan + v[3] + eSpan + " / " + fiSpan + fi[3] + eSpan + "] " + eSpan + " / -" + fSpan + f[3] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-4'> " + (t[4] + o[4]) + " (+" + afiSpan + (v[4] + fi[4]) + eSpan +
+                      " [" + aSpan + v[4] + eSpan + " / " + fiSpan + fi[4] + eSpan + "] " + eSpan + " / -" + fSpan + f[4] + eSpan + ") </td>";
+                    content += "</tr>";
+                }
+            } else {
+                for (i=(versions.length-1); i>0; i--) {
+                    v = countBugsVersion(i, 4);
+                    t = countTotalBugsVersion(i);
+                    o = countFixedButActiveBugsVersion(i);
+                    f = countFixedBugsInVersion(i);
+                    content += "<tr>";
+                    content += "<td class='summary-name'>" + versions[i][1] + "</td>";
+                    content += "<td class='summary-priority-all'> " + (t[0] + o[0]) + " (+" + aSpan + v[0] + eSpan + " / -" + fSpan + f[0] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-1'  > " + (t[1] + o[1]) + " (+" + aSpan + v[1] + eSpan + " / -" + fSpan + f[1] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-2'  > " + (t[2] + o[2]) + " (+" + aSpan + v[2] + eSpan + " / -" + fSpan + f[2] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-3'  > " + (t[3] + o[3]) + " (+" + aSpan + v[3] + eSpan + " / -" + fSpan + f[3] + eSpan + ") </td>";
+                    content += "<td class='summary-priority-4'  > " + (t[4] + o[4]) + " (+" + aSpan + v[4] + eSpan + " / -" + fSpan + f[4] + eSpan + ") </td>";
+                    content += "</tr>";
+                }
+            }
+
+            t = countTotalBugsVersion(0);
+            o = countFixedButActiveBugsVersion(0);
+            content += "<tr>";
+            content += "<td class='summary-name'>" + versions[0][1] + "</td>";
+            content += "<td class='summary-priority-all'> " + (t[0] + o[0]) + " </td>";
+            content += "<td class='summary-priority-1'  > " + (t[1] + o[1]) + " </td>";
+            content += "<td class='summary-priority-2'  > " + (t[2] + o[2]) + " </td>";
+            content += "<td class='summary-priority-3'  > " + (t[3] + o[3]) + " </td>";
+            content += "<td class='summary-priority-4'  > " + (t[4] + o[4]) + " </td>";
+            content += "</tr>";
+
+            content += "</table>";
+            container.innerHTML = content;
+            container.style.display="block";
+            resetMessage();
+         }
+
+         // display list by cat tab
+         function displayListByCategories() {
+            hide(historyControlContainerId);
+            show(filterContainerId);
+            var container = document.getElementById(listByCategoriesContainerId);
+            container.innerHTML = "";
+            container.style.display="block";
+            displayMessage("Loading stats (categories)...");
+            container.innerHTML = displayLevel1("lbc", "Stats by Bug Categories");
+            resetMessage();
+         }
+
+         // display list by package tab
+         function displayListByPackages() {
+            hide(historyControlContainerId);
+            show(filterContainerId);
+            var container = document.getElementById(listByPackagesContainerId);
+            container.style.display="block";
+            if (!bPackageNamesPopulated) {
+               displayMessage("Initializing...");
+               populatePackageNames();
+            }
+            displayMessage("Loading stats (packages)...");
+            container.innerHTML = displayLevel1("lbp", "Stats by Bug Package");
+            resetMessage();
+         }
+
+         // callback function for list item click
+         function toggleList(listType, containerId, id1, id2, id3) {
+            var container = document.getElementById(containerId);
+            if (container.style.display=="block") {
+               container.style.display="none";
+            } else {
+               if (listType=="lbc") {
+                  if (id1.length>0 && id2.length==0 && id3.length==0) {
+                     displayCategoriesCodes(containerId, id1);
+                  } else if (id1.length>0 && id2.length>0 && id3.length==0) {
+                     displayCategoriesCodesPatterns(containerId, id1, id2);
+                  } else if (id1.length>0 && id2.length>0 && id3.length>0) {
+                     displayCategoriesCodesPatternsBugs(containerId, id1, id2, id3);
+                  } else {
+                     // ???
+                  }
+               } else if (listType=="lbp") {
+                  if (id1.length>0 && id2.length==0 && id3.length==0) {
+                     displayPackageCodes(containerId, id1);
+                  } else if (id1.length>0 && id2.length>0 && id3.length==0) {
+                     displayPackageClassPatterns(containerId, id1, id2);
+                  } else if (id1.length>0 && id2.length>0 && id3.length>0) {
+                     displayPackageClassPatternsBugs(containerId, id1, id2, id3);
+                  } else {
+                     // ???
+                  }
+               } else {
+                  // ????
+               }
+            }
+         }
+
+         // list by categories, display bug cat>codes
+         function displayCategoriesCodes(containerId, catId) {
+            displayMessage("Loading stats (codes)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="") {
+               container.innerHTML = displayLevel2("lbc", catId);
+            }
+            resetMessage();
+         }
+
+         // list by categories, display bug package>codes
+         function displayPackageCodes(containerId, packageId) {
+            displayMessage("Loading stats (codes)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="") {
+               container.innerHTML = displayLevel2("lbp", packageId);
+            }
+            resetMessage();
+         }
+
+         // list by categories, display bug cat>codes>patterns
+         function displayCategoriesCodesPatterns(containerId, catId, codeId) {
+            displayMessage("Loading stats (patterns)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="")
+               container.innerHTML = displayLevel3("lbc", catId, codeId);
+            resetMessage();
+         }
+
+         // list by package, display bug package>class>patterns
+         function displayPackageClassPatterns(containerId, packageId, classId) {
+            displayMessage("Loading stats (patterns)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="")
+               container.innerHTML = displayLevel3("lbp", packageId, classId);
+            resetMessage();
+         }
+
+         // list by categories, display bug cat>codes>patterns>bugs
+         function displayCategoriesCodesPatternsBugs(containerId, catId, codeId, patternId) {
+            displayMessage("Loading stats (bugs)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="")
+               container.innerHTML = displayLevel4("lbc", catId, codeId, patternId);
+            resetMessage();
+         }
+
+         // list by package, display bug package>class>patterns>bugs
+         function displayPackageClassPatternsBugs(containerId, packageId, classId, patternId) {
+            displayMessage("Loading stats (bugs)...");
+            var container = document.getElementById(containerId);
+            container.style.display="block";
+            if (container.innerHTML=="Loading..." || container.innerHTML=="")
+               container.innerHTML = displayLevel4("lbp",  packageId, classId, patternId);
+            resetMessage();
+         }
+
+         // generate level 1 list
+         function displayLevel1(list, title) {
+            var content = "";
+            var content2 = "";
+
+            content += "<h3>"+title+"</h3>";
+            content += getPriorityLegend();
+            content2 += "<div class='bugList'>";
+
+            var id = "";
+            var containerId = "";
+            var subContainerId = "";
+            var prefixSub = "";
+            var prefixId = "";
+            var p = [0,0,0,0,0];
+            var numberOfBugs = 0;
+            var label = "";
+            var max = 0;
+            if (list=="lbc") {
+               max = categories.length;
+            } else if (list=="lbp") {
+               max = packageStats.length;
+            }
+
+            for (var x=0; x<max -1; x++) {
+               if (list=="lbp" && packageStats[x][1]=="0") continue;
+
+               if (list=="lbc") {
+                  id = categories[x][idxCatKey];
+                  label = categories[x][idxCatDescr];
+                  containerId = "categories-" + id;
+                  subContainerId = "cat-"+id;
+                  p = countBugsCat(selectedVersion, selectedPriority, id, idxBugCat);
+               }
+               if (list=="lbp") {
+                  id = packageStats[x][0];
+                  label = packageStats[x][0];
+                  containerId = "packages-" + id;
+                  subContainerId = "package-"+id;
+                  p = countBugsPackage(selectedVersion, selectedPriority, id, idxBugPackage);
+               }
+
+               subContainerId = prefixSub+id;
+
+               var total = p[1]+p[2]+p[3]+p[4];
+               if (total > 0) {
+                  content2 += addListItem( 1, containerId, label, total, p, subContainerId,
+                                          "toggleList('" + list + "', '" + subContainerId + "', '"+ id + "', '', '')"
+                                          );
+               }
+               numberOfBugs += total;
+            }
+            content2 += "</div>";
+            content += "<h4>Total number of bugs";
+            if (selectedVersion!=-1) {
+               content += " (introduced in release " + versions[selectedVersion][1] +")";
+            }
+            content += ": "+numberOfBugs+"</h4>";
+            return content+content2;
+         }
+
+         // generate level 2 list
+        function displayLevel2(list, id1) {
+            var content = "";
+            var code = "";
+            var containerId = "";
+            var subContainerId = "";
+            var p = [0,0,0,0,0];
+            var max = 0;
+            var id2 = "";
+            if (list=="lbc") {
+               max = codes.length;
+            } else if (list=="lbp") {
+               max = classStats.length;
+            }
+
+            for (var x=0; x<max -1; x++) {
+               if (list=="lbp" && classStats[x][3]=="0") continue;
+
+               if (list=="lbc") {
+                  id2 = codes[x][idxCodeKey];
+                  label = codes[x][idxCodeDescr];
+                  containerId = "codes-"+id1;
+                  subContainerId = "cat-" + id1 + "-code-" + id2;
+                  p = countBugsCode(selectedVersion, selectedPriority, id1, idxBugCat, id2, idxBugCode);
+               }
+               if (list=="lbp") {
+                  id2 = classStats[x][0];
+                  label = classStats[x][0];
+                  containerId = "packages-"+id1;
+                  subContainerId = "package-" + id1 + "-class-" + id2;
+                  p = countBugsClass(selectedVersion, selectedPriority, id1, idxBugPackage, id2, idxBugClass);
+               }
+
+               var total = p[1]+p[2]+p[3]+p[4];
+               if (total > 0) {
+                  content += addListItem( 2, containerId, label, total, p, subContainerId,
+                                          "toggleList('"+ list + "', '" + subContainerId + "', '"+ id1 + "', '"+ id2 + "', '')"
+                                          );
+               }
+            }
+            return content;
+         }
+
+         // generate level 3 list
+        function displayLevel3(list, id1, id2) {
+            var content = "";
+            var containerId = "";
+            var subContainerId = "";
+            var p = [0,0,0,0,0];
+            var max = 0;
+            var label = "";
+            var id3 = "";
+
+            if (list=="lbc") {
+               max = patterns.length;
+            } else if (list=="lbp") {
+               max = patterns.length;
+            }
+
+            for (var x=0; x<max -1; x++) {
+               //if (list=="lbp" && (patterns[x][0]!=id1 || patterns[x][1]!=id2)) continue;
+               //if (list=="lbp" && classStats[x][3]=="0") continue;
+
+               if (list=="lbc") {
+                  id3 = patterns[x][idxPatternKey];;
+                  label = patterns[x][idxPatternDescr];
+                  containerId = "patterns-"+id1;
+                  subContainerId = "cat-" + id1 + "-code-" + id2 + "-pattern-" + id3;
+                  p = countBugsPattern(selectedVersion, selectedPriority, id1, idxBugCat, id2, idxBugCode, id3, idxBugPattern);
+               }
+               if (list=="lbp") {
+                  id3 = patterns[x][idxPatternKey];;
+                  label = patterns[x][idxPatternDescr];
+                  containerId = "classpatterns-"+id1;
+                  subContainerId = "package-" + id1 + "-class-" + id2 + "-pattern-" + id3;
+                  p = countBugsClassPattern(selectedVersion, selectedPriority, id2, idxBugClass, id3, idxBugPattern);
+               }
+
+               var total = p[1]+p[2]+p[3]+p[4];
+               if (total > 0) {
+                  content += addListItem( 3, containerId, label, total, p, subContainerId,
+                                          "toggleList('" + list + "', '" + subContainerId + "', '"+ id1 + "', '"+ id2 + "', '"+ id3 + "')"
+                                          );
+               }
+            }
+            return content;
+         }
+
+         // generate level 4 list
+        function displayLevel4(list, id1, id2, id3) {
+            var content = "";
+            var bug = "";
+            var bugP = 0;
+            var containerId = "";
+            var subContainerId = "";
+            var bugId = "";
+            var label = "";
+            var p = [0,0,0,0,0];
+            for (var x=0; x<bugs.length -1; x++) {
+               bug = bugs[x];
+               if (list=="lbc") {
+                  if ( bug[1]!=id1 || bug[2]!=id2 || bug[3]!=id3 ) continue;
+                  if ( selectedVersion!=-1
+                     && selectedVersion!=bug[5]) continue;
+                  if ( selectedPriority!=4
+                     && selectedPriority<bug[4]) continue;
+
+                  subContainerId = "cat-" + id1 + "-code-" + id2 + "-pattern-" + id3 + "-bug-" + bug[0];
+               }
+               if (list=="lbp") {
+                  if ( bug[7]!=id1 || bug[6]!=id2 || bug[3]!=id3 ) continue;
+                  if ( selectedVersion!=-1
+                     && selectedVersion!=bug[5]) continue;
+                  if ( selectedPriority!=4
+                     && selectedPriority<bug[4]) continue;
+
+                  subContainerId = "package-" + id1 + "-class-" + id2 + "-pattern-" + id3 + "-bug-" + bug[0];
+               }
+
+               bugId = "b-uid-" + bug[0];
+               label = bug[idxBugDescr];
+               containerId = "bugs-"+bugId;
+               bugP = bug[4];
+               p[bugP]++;
+               var total = p[1]+p[2]+p[3]+p[4];
+               if (total > 0) {
+                  content += addBug(   4, containerId, label, bugP, bug[5], subContainerId,
+                                       "showbug('" + bugId + "', '" + subContainerId + "', '"+id3+"')");
+               }
+            }
+            return content;
+         }
+
+
+         function addListItem(level, id, label, total, p, subId, onclick) {
+            var content = "";
+
+            content += "<div class='bugList-level"+level+"' >";
+            content += "<div class='bugList-level"+level+"-label' id='"+id+"' >";
+            content += "<a href='' onclick=\"" + onclick + ";return false;\" ";
+            content += ">";
+            content += "<strong>"+label+"</strong>";
+            content += " "+total+" bugs";
+            if (selectedPriority>1)
+               content += " <em>("+p[1];
+            if (selectedPriority>=2)
+               content += "/"+p[2];
+            if (selectedPriority>=3)
+               content += "/"+p[3];
+            if (selectedPriority>=4)
+               content += "/"+p[4];
+            if (selectedPriority>1)
+               content += ")</em>";
+            content += "</a>";
+            content += "</div>";
+            content += "<div class='bugList-level"+level+"-inner' id='"+subId+"' style='display:none;'>Loading...</div>";
+            content += "</div>";
+            return content;
+         }
+
+         function addBug( level, id, label, p, version, subId, onclick) {
+            var content = "";
+
+            content += "<div class='bugList-level" + level + "' id='" + id + "'>";
+            content += "<div class='bugList-level" + level + "-label' id='" + id + "'>";
+            content += "<span class='b-" + p + "'>&nbsp;&nbsp;&nbsp;</span>";
+            content += "<a href='' onclick=\"" + onclick + ";return false;\">";
+            if (version==lastVersion) {
+               content += "<span style='color:red;font-weight:bold;'>NEW!</span> ";
+            }
+            content += "<strong>" + label + "</strong>";
+            if (version==0) {
+               content += " <em>since release first historized release</em>";
+            } else {
+               content += " <em>since release " + versions[version][1] + "</em>";
+            }
+            content += "</a>";
+            content += "</div>";
+            content += "<div class='bugList-level" + level + "-inner' id='" + subId + "' style='display:none;'>Loading...</div>";
+            content += "</div>";
+            return content;
+         }
+
+         function countBugsVersion(version, priority) {
+            return countBugs(version, priority, "", -1, "", -1, "", -1, "", -1, "", -1);
+         }
+
+         function countBugsCat(version, priority, cat, idxCat) {
+            return countBugs(version, priority, cat, idxCat, "", -1, "", -1, "", -1, "", -1);
+         }
+
+         function countBugsPackage(version, priority, packageId, idxPackage) {
+            return countBugs(version, priority, "", -1, "", -1, "", -1, packageId, idxPackage, "", -1);
+         }
+
+         function countBugsCode(version, priority, cat, idxCat, code, idxCode) {
+            return countBugs(version, priority, cat, idxCat, code, idxCode, "", -1, "", -1, "", -1);
+         }
+
+         function countBugsPattern(version, priority, cat, idxCat, code, idxCode, packageId, idxPattern) {
+            return countBugs(version, priority, cat, idxCat, code, idxCode, packageId, idxPattern, "", -1, "", -1);
+         }
+
+         function countBugsClass(version, priority, id1, idxBugPackage, id2, idxBugClass) {
+            return countBugs(version, priority, "", -1, "", -1, "", -1, id1, idxBugPackage, id2, idxBugClass);
+         }
+
+         function countBugsClassPattern(version, priority, id2, idxBugClass, id3, idxBugPattern) {
+            return countBugs(version, priority, "", -1, "", -1, id3, idxBugPattern, "", -1, id2, idxBugClass);
+         }
+
+         function countBugs(version, priority, cat, idxCat, code, idxCode, pattern, idxPattern, packageId, idxPackage, classId, idxClass) {
+            var count = [0,0,0,0,0];
+            var last=1000000;
+            for (var x=0; x<bugs.length-1; x++) {
+               var bug = bugs[x];
+
+               var bugCat = bug[idxCat];
+               var bugP = bug[4];
+               var bugCode = bug[idxCode];
+               var bugPattern = bug[idxPattern];
+
+               if (     (version==-1    || version==bug[5])
+                     && (priority==4    || priority>=bug[4])
+                     && (idxCat==-1     || bug[idxCat]==cat)
+                     && (idxCode==-1    || bug[idxCode]==code)
+                     && (idxPattern==-1 || bug[idxPattern]==pattern)
+                     && (idxPackage==-1 || bug[idxPackage]==packageId)
+                     && (idxClass==-1   || bug[idxClass]==classId)
+                     ) {
+                  count[bug[4]]++;
+               }
+            }
+            count[0] = count[1] + count[2] + count[3] + count[4];
+            return count;
+         }
+
+         function countFixedBugsInVersion(version) {
+            var count = [0,0,0,0,0];
+            var last=1000000;
+            for (var x=0; x<fixedBugs.length-1; x++) {
+               var bug = fixedBugs[x];
+
+               var bugP = bug[4];
+
+               if ( version==-1 || version==(bug[6]+1)) {
+                  count[bug[4]]++;
+               }
+            }
+            count[0] = count[1] + count[2] + count[3] + count[4];
+            return count;
+         }
+
+         function countFixedBugsIntroducedInVersion(version) {
+            var count = [0,0,0,0,0];
+            var last=1000000;
+            for (var x=0; x<fixedBugs.length-1; x++) {
+               var bug = fixedBugs[x];
+
+               var bugP = bug[4];
+
+               if ( version==-1 || version==(bug[5])) {
+                  count[bug[4]]++;
+               }
+            }
+            count[0] = count[1] + count[2] + count[3] + count[4];
+            return count;
+         }
+
+         function countFixedButActiveBugsVersion(version) {
+            var count = [0,0,0,0,0];
+            var last=1000000;
+            for (var x=0; x<fixedBugs.length-1; x++) {
+               var bug = fixedBugs[x];
+
+               var bugP = bug[4];
+
+               if ( version==-1 || (version >=bug[5] && version<=bug[6]) ) {
+                  count[bug[4]]++;
+               }
+            }
+            count[0] = count[1] + count[2] + count[3] + count[4];
+            return count;
+         }
+
+         function countTotalBugsVersion(version) {
+            var count = [0,0,0,0,0];
+            var last=1000000;
+            for (var x=0; x<bugs.length-1; x++) {
+               var bug = bugs[x];
+
+               var bugP = bug[4];
+
+               if (version==-1 || version>=bug[5]) {
+                  count[bug[4]]++;
+               }
+            }
+            count[0] = count[1] + count[2] + count[3] + count[4];
+            return count;
+         }
+
+         function getPriorityLegend() {
+            var content = "";
+            content += "<h5><span class='b-1'>&nbsp;&nbsp;&nbsp;</span> P1 ";
+            content += "<span class='b-2'>&nbsp;&nbsp;&nbsp;</span> P2 ";
+            content += "<span class='b-3'>&nbsp;&nbsp;&nbsp;</span> P3 ";
+            content += "<span class='b-4'>&nbsp;&nbsp;&nbsp;</span> Exp ";
+            content += "</h5>";
+            return content;
+         }
+
+         function populatePackageNames() {
+            for (var i=0; i<bugs.length; i++) {
+               var classId = bugs[i][6];
+               var idx = classId.lastIndexOf('.');
+               var packageId = "";
+
+               if (idx>0) {
+                  packageId = classId.substring(0, idx);
+               }
+
+               bugs[i][7] = packageId;
+            }
+         }
+
+         function showbug(bugId, containerId, patternId) {
+            var bugplaceholder   = document.getElementById(containerId);
+            var bug              = document.getElementById(bugId);
+
+            if ( bugplaceholder==null) {
+               alert(buguid+'-ph-'+list+' - '+buguid+' - bugplaceholder==null');
+               return;
+            }
+            if ( bug==null) {
+               alert(buguid+'-ph-'+list+' - '+buguid+' - bug==null');
+               return;
+            }
+
+            var newBug = bug.innerHTML;
+            var pattern = document.getElementById('tip-'+patternId).innerHTML;
+            toggle(containerId);
+            bugplaceholder.innerHTML = newBug + pattern;
+         }
+         function toggle(foo) {
+            if( document.getElementById(foo).style.display == "none") {
+               show(foo);
+            } else {
+               if( document.getElementById(foo).style.display == "block") {
+                  hide(foo);
+               } else {
+                  show(foo);
+               }
+            }
+         }
+         function show(foo) {
+            document.getElementById(foo).style.display="block";
+         }
+         function hide(foo) {
+            document.getElementById(foo).style.display="none";
+         }
+
+         window.onload = function(){
+            init();
+         };
+      </script>
+<script type="text/javascript">
+         // versions fields: release id, release label
+         var versions = new Array(
+            
+               [ "0", "" ]
+            );
+
+         // categories fields: category id, category label
+         var categories = new Array(
+            
+               [ "STYLE", "Dodgy code" ],
+            
+               [ "", "" ]
+            );
+
+         // codes fields: code id, code label
+         var codes = new Array(
+            
+               [ "DLS", "Dead local store" ],
+            
+               [ "", "" ]
+            );
+
+         // patterns fields: category id, code id, pattern id, pattern label
+         var patterns = new Array(
+            
+               [ "STYLE", "DLS", "DLS_DEAD_LOCAL_STORE", "Dead store to local variable" ],
+
+            
+               [ "", "", "", "" ]
+            );
+
+         // class stats fields: class name, package name, isInterface, total bugs, bugs p1, bugs p2, bugs p3, bugs p4
+         var classStats = new Array(
+            
+               [ "com.gu.auth.dao.ApprovalStageDAO", "com.gu.auth.dao", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.dao.BaseDAO", "com.gu.auth.dao", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.dao.StudentDAO", "com.gu.auth.dao", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.HomeController", "com.gu.auth", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.HomeProcessor", "com.gu.auth", "false", "2", "", "2", "", "" ],
+            
+               [ "com.gu.auth.HomeProcessor$1", "com.gu.auth", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.HomeProcessor$2", "com.gu.auth", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.model.ApprovalStage", "com.gu.auth.model", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.model.Student", "com.gu.auth.model", "false", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.service.StudentService", "com.gu.auth.service", "false", "0", "", "", "", "" ],
+            
+               [ "", "", "", "", "", "", "", "" ]
+            );
+
+         // package stats fields: package name, total bugs, bugs p1, bugs p2, bugs p3, bugs p4
+         var packageStats = new Array(
+            
+               [ "com.gu.auth", "2", "", "2", "", "" ],
+            
+               [ "com.gu.auth.dao", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.model", "0", "", "", "", "" ],
+            
+               [ "com.gu.auth.service", "0", "", "", "", "" ],
+            
+               [ "", "", "", "", "", "" ]
+            );
+
+
+         // bugs fields: bug id, category id, code id, pattern id, priority, release id, class name, packagename (populated by javascript)
+         var bugs = new Array(
+            
+
+               [ "bea517c579a8257a7cc6b11d47fa6805-0",
+                 "STYLE",
+                 "DLS",
+                 "DLS_DEAD_LOCAL_STORE",
+                 2,
+                 0,
+                 "com.gu.auth.HomeProcessor",
+                 ""],
+            
+
+               [ "b2fb94d57148184bfe87151441e20043-0",
+                 "STYLE",
+                 "DLS",
+                 "DLS_DEAD_LOCAL_STORE",
+                 2,
+                 0,
+                 "com.gu.auth.HomeProcessor",
+                 ""],
+            
+               [ "", "", "", "", 0, 0, "", "" ]
+            );
+
+         // bugs fields: bug id, category id, code id, pattern id, priority, first release id, fixed release id, class name
+         var fixedBugs = new Array(
+            
+               [ "", "", "", "", 0, 0, 0, "" ]
+            );
+
+      </script>
+</head>
+<body>
+<h3>
+<a href="http://findbugs.sourceforge.net">FindBugs</a> (2.0.0) 
+         Analysis for 
+         authorisationService</h3>
+<div id="menuWrapper" style="">
+<div id="navcontainer">
+<ul id="navlist">
+<li>
+<a id="summary" class="current" href="#" onclick="selectMenu('summary'); return false;">Summary</a>
+</li>
+<li>
+<a id="history" class="none" href="#" onclick="selectMenu('history'); return false;">History</a>
+</li>
+<li>
+<a id="listByCategories" class="none" href="#" onclick="selectMenu('listByCategories'); return false;">Browse By Categories</a>
+</li>
+<li>
+<a id="listByPackages" class="none" href="#" onclick="selectMenu('listByPackages'); return false;">Browse by Packages</a>
+</li>
+<li>
+<a id="info" class="none" href="#" onclick="selectMenu('info'); return false;">Info</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="displayWrapper">
+<div style="height:25px;">
+<div id="messageContainer" style="float:right;">
+            Computing data...
+         </div>
+<div id="filterWrapper" style="display:none;">
+<form name="findbugsForm">
+<div id="filterContainer">
+<select name="versions" onchange="filter()">
+<option value="loading">Loading filter...</option>
+</select>
+<select name="priorities" onchange="filter()">
+<option value="loading">Loading filter...</option>
+</select>
+</div>
+</form>
+</div>
+<div id="historyControlWrapper" style="display:none;">
+<form name="findbugsHistoryControlForm">
+<div id="historyControlContainer">
+<input type="checkbox" name="includeFixedIntroducedBugs" value="checked" alt="Include fixed introduced bugs." onclick="includeFixedIntroducedBugsInHistory()"/>
+               Include counts of introduced bugs that were fixed in later releases.
+             </div>
+</form>
+</div>
+</div>
+<div id="summaryContainer" class="displayContainer">
+<h3>Package Summary</h3>
+<table>
+<tr>
+<th>Package</th>
+<th>Code Size</th>
+<th>Bugs</th>
+<th>Bugs p1</th>
+<th>Bugs p2</th>
+<th>Bugs p3</th>
+<th>Bugs Exp.</th>
+</tr>
+<tr>
+<td class="summary-name">
+                     Overall
+                     (4 packages),
+                     (10 classes)
+                  </td>
+<td class="summary-size">203</td>
+<td class="summary-priority-all">2</td>
+<td class="summary-priority-1"/>
+<td class="summary-priority-2">2</td>
+<td class="summary-priority-3"/>
+<td class="summary-priority-4"/>
+</tr>
+<tr>
+<td class="summary-name">com.gu.auth</td>
+<td class="summary-size">96</td>
+<td class="summary-priority-all">2</td>
+<td class="summary-priority-1"/>
+<td class="summary-priority-2">2</td>
+<td class="summary-priority-3"/>
+<td class="summary-priority-4"/>
+</tr>
+</table>
+</div>
+<div id="infoContainer" class="displayContainer">
+<div id="analyzed-files">
+<h3>Analyzed Files:</h3>
+<ul>
+<li>C:\projects\AuthorisationService\target\classes</li>
+</ul>
+</div>
+<div id="used-libraries">
+<h3>Used Libraries:</h3>
+<ul>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\mojo\findbugs-maven-plugin\2.4.0\findbugs-maven-plugin-2.4.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\gmaven-mojo\1.3\gmaven-mojo-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\runtime\gmaven-runtime-api\1.3\gmaven-runtime-api-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\feature\gmaven-feature-api\1.3\gmaven-feature-api-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\runtime\gmaven-runtime-1.5\1.3\gmaven-runtime-1.5-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\feature\gmaven-feature-support\1.3\gmaven-feature-support-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\groovy\groovy-all-minimal\1.5.8\groovy-all-minimal-1.5.8.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\ant\ant\1.7.1\ant-1.7.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\ant\ant-launcher\1.7.1\ant-launcher-1.7.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\jline\jline\0.9.94\jline-0.9.94.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\plexus\plexus-interpolation\1.1\plexus-interpolation-1.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\gmaven-plugin\1.3\gmaven-plugin-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\runtime\gmaven-runtime-loader\1.3\gmaven-runtime-loader-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\gmaven\runtime\gmaven-runtime-support\1.3\gmaven-runtime-support-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\sonatype\gshell\gshell-io\2.0\gshell-io-2.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\thoughtworks\qdox\qdox\1.10\qdox-1.10.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\shared\file-management\1.2.1\file-management-1.2.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\shared\maven-shared-io\1.1\maven-shared-io-1.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-lang\commons-lang\2.4\commons-lang-2.4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\slf4j\slf4j-api\1.5.10\slf4j-api-1.5.10.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\sonatype\gossip\gossip\1.2\gossip-1.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\reporting\maven-reporting-impl\2.1\maven-reporting-impl-2.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-validator\commons-validator\1.2.0\commons-validator-1.2.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-beanutils\commons-beanutils\1.7.0\commons-beanutils-1.7.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-digester\commons-digester\1.6\commons-digester-1.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-logging\commons-logging\1.0.4\commons-logging-1.0.4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\oro\oro\2.0.8\oro-2.0.8.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xml-apis\xml-apis\1.0.b2\xml-apis-1.0.b2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\groovy\groovy-all\1.7.4\groovy-all-1.7.4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\reporting\maven-reporting-api\3.0\maven-reporting-api-3.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-core\1.1.3\doxia-core-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-logging-api\1.1.3\doxia-logging-api-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xerces\xercesImpl\2.9.1\xercesImpl-2.9.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-httpclient\commons-httpclient\3.1\commons-httpclient-3.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-codec\commons-codec\1.2\commons-codec-1.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-sink-api\1.1.3\doxia-sink-api-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-decoration-model\1.1.3\doxia-decoration-model-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-site-renderer\1.1.3\doxia-site-renderer-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-module-xhtml\1.1.3\doxia-module-xhtml-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\doxia\doxia-module-fml\1.1.3\doxia-module-fml-1.1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\plexus\plexus-i18n\1.0-beta-7\plexus-i18n-1.0-beta-7.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\plexus\plexus-velocity\1.1.7\plexus-velocity-1.1.7.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\velocity\velocity\1.5\velocity-1.5.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-collections\commons-collections\3.2\commons-collections-3.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\apache\maven\shared\maven-doxia-tools\1.2.1\maven-doxia-tools-1.2.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-io\commons-io\1.4\commons-io-1.4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\findbugs-ant\2.0.0\findbugs-ant-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\findbugs\2.0.0\findbugs-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\bcel\2.0.0\bcel-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\jsr305\2.0.0\jsr305-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\jFormatString\2.0.0\jFormatString-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\code\findbugs\annotations\2.0.0\annotations-2.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\dom4j\dom4j\1.6.1\dom4j-1.6.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\jaxen\jaxen\1.1.1\jaxen-1.1.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\jdom\jdom\1.0\jdom-1.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xom\xom\1.0\xom-1.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xerces\xmlParserAPIs\2.6.2\xmlParserAPIs-2.6.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xalan\xalan\2.6.0\xalan-2.6.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\ibm\icu\icu4j\2.6.1\icu4j-2.6.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\asm\asm\3.3\asm-3.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\asm\asm-tree\3.3\asm-tree-3.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\asm\asm-commons\3.3\asm-commons-3.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\jgoodies\plastic\1.2.0\plastic-1.2.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\plexus\plexus-resources\1.0-alpha-4\plexus-resources-1.0-alpha-4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\codehaus\plexus\plexus-utils\1.5.1\plexus-utils-1.5.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\thymeleaf\thymeleaf-spring4\2.1.2.RELEASE\thymeleaf-spring4-2.1.2.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\thymeleaf\thymeleaf\2.1.2.RELEASE\thymeleaf-2.1.2.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\ognl\ognl\3.0.6\ognl-3.0.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-dbcp\commons-dbcp\1.2.2\commons-dbcp-1.2.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-pool\commons-pool\1.3\commons-pool-1.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-context\4.0.1.RELEASE\spring-context-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-aop\4.0.1.RELEASE\spring-aop-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-beans\4.0.1.RELEASE\spring-beans-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-core\4.0.1.RELEASE\spring-core-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\commons-logging\commons-logging\1.1.1\commons-logging-1.1.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-expression\4.0.1.RELEASE\spring-expression-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-webmvc\4.0.1.RELEASE\spring-webmvc-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-web\4.0.1.RELEASE\spring-web-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-test\4.0.1.RELEASE\spring-test-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-orm\4.0.1.RELEASE\spring-orm-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-jdbc\4.0.1.RELEASE\spring-jdbc-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-tx\4.0.1.RELEASE\spring-tx-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\springframework\spring-jms\4.0.1.RELEASE\spring-jms-4.0.1.RELEASE.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\google\guava\guava\14.0\guava-14.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\aspectj\aspectjrt\1.6.10\aspectjrt-1.6.10.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\slf4j\slf4j-api\1.7.6\slf4j-api-1.7.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\slf4j\jcl-over-slf4j\1.7.6\jcl-over-slf4j-1.7.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\slf4j\slf4j-log4j12\1.7.6\slf4j-log4j12-1.7.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\oracle\oracle\10.2.0.2.0\oracle-10.2.0.2.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\validation\validation-api\1.1.0.Final\validation-api-1.1.0.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\hibernate\hibernate-validator\5.1.0.Final\hibernate-validator-5.1.0.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\jboss\logging\jboss-logging\3.1.3.GA\jboss-logging-3.1.3.GA.jar</li>
+<li>C:\Users\dl121z\.m2\repository\com\fasterxml\classmate\1.0.0\classmate-1.0.0.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\mail\mail\1.4\mail-1.4.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\inject\javax.inject\1\javax.inject-1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\servlet\servlet-api\2.5\servlet-api-2.5.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\servlet\jsp\jsp-api\2.1\jsp-api-2.1.jar</li>
+<li>C:\Users\dl121z\.m2\repository\javax\servlet\jstl\1.2\jstl-1.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\pmd\pmd\4.3\pmd-4.3.jar</li>
+<li>C:\Users\dl121z\.m2\repository\ant\ant\1.6\ant-1.6.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xml-apis\xml-apis\1.3.02\xml-apis-1.3.02.jar</li>
+<li>C:\Users\dl121z\.m2\repository\xerces\xercesImpl\2.6.2\xercesImpl-2.6.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\asm\asm\3.2\asm-3.2.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\hibernate\hibernate-core\4.2.4.Final\hibernate-core-4.2.4.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\antlr\antlr\2.7.7\antlr-2.7.7.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\jboss\spec\javax\transaction\jboss-transaction-api_1.1_spec\1.0.1.Final\jboss-transaction-api_1.1_spec-1.0.1.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\hibernate\javax\persistence\hibernate-jpa-2.0-api\1.0.1.Final\hibernate-jpa-2.0-api-1.0.1.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\hibernate\common\hibernate-commons-annotations\4.0.2.Final\hibernate-commons-annotations-4.0.2.Final.jar</li>
+<li>C:\Users\dl121z\.m2\repository\org\javassist\javassist\3.18.0-GA\javassist-3.18.0-GA.jar</li>
+</ul>
+</div>
+<div id="analysis-error">
+<h3>Analysis Errors:</h3>
+<ul>
+<li>None</li>
+</ul>
+</div>
+</div>
+<div id="historyContainer" class="displayContainer">Loading...</div>
+<div id="listByCategoriesContainer" class="displayContainer">Loading...</div>
+<div id="listByPackagesContainer" class="displayContainer">Loading...</div>
+</div>
+<div id="bug-collection" style="display:none;">
+<div id="tip-DLS_DEAD_LOCAL_STORE" class="tip">
+
+<p>
+This instruction assigns a value to a local variable,
+but the value is not read or used in any subsequent instruction.
+Often, this indicates an error, because the value computed is never
+used.
+</p>
+<p>
+Note that Sun's javac compiler often generates dead stores for
+final local variables.  Because FindBugs is a bytecode-based tool,
+there is no easy way to eliminate these false positives.
+</p>
+
+    </div>
+<div style="display:none;" class="bug" id="b-uid-bea517c579a8257a7cc6b11d47fa6805-0">
+<div class="b-r">In class com.gu.auth.HomeProcessor</div>
+<div class="b-r">In method com.gu.auth.HomeProcessor.aDummyMethod()</div>
+<div class="b-r">Local variable named x</div>
+<div class="b-r">At HomeProcessor.java:[line 77]</div>
+<div class="b-d">Dead store to x in com.gu.auth.HomeProcessor.aDummyMethod()</div>
+</div>
+<div style="display:none;" class="bug" id="b-uid-b2fb94d57148184bfe87151441e20043-0">
+<div class="b-r">In class com.gu.auth.HomeProcessor</div>
+<div class="b-r">In method com.gu.auth.HomeProcessor.doSomething()</div>
+<div class="b-r">Local variable named name</div>
+<div class="b-r">At HomeProcessor.java:[line 96]</div>
+<div class="b-d">Dead store to name in com.gu.auth.HomeProcessor.doSomething()</div>
+</div>
+</div>
+</body>
+</html>
